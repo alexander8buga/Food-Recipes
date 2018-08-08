@@ -3783,19 +3783,7 @@ eval("var g;\n\n// This works in non-strict mode\ng = (function() {\n\treturn th
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar _test = __webpack_require__(/*! ./test */ \"./src/js/test.js\");\n\nvar _test2 = _interopRequireDefault(_test);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar x = 23; // Global app controller\n\nconsole.log('I imported ' + _test2.default + ' from other module test.js. Variable x is ' + x);\n\n//# sourceURL=webpack:///./src/js/index.js?");
-
-/***/ }),
-
-/***/ "./src/js/test.js":
-/*!************************!*\
-  !*** ./src/js/test.js ***!
-  \************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nconsole.log('Imported module');\nexports.default = 23;\n\n//# sourceURL=webpack:///./src/js/test.js?");
+eval("\n\n// Global app controller\nvar getResults = function () {\n  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(query) {\n    return regeneratorRuntime.wrap(function _callee$(_context) {\n      while (1) {\n        switch (_context.prev = _context.next) {\n          case 0:\n          case \"end\":\n            return _context.stop();\n        }\n      }\n    }, _callee, this);\n  }));\n\n  return function getResults(_x) {\n    return _ref.apply(this, arguments);\n  };\n}();\n\nfunction _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step(\"next\", value); }, function (err) { step(\"throw\", err); }); } } return step(\"next\"); }); }; }\n\ngetResults();\n//http://food2fork.com/api/search\n//1cc169cd69294c6a33d5b0c2c270c49f\n\n//# sourceURL=webpack:///./src/js/index.js?");
 
 /***/ }),
 
