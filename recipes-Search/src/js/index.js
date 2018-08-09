@@ -1,12 +1,16 @@
 // Global app controller
 import Search from './models/Search';
 import * as searchView from './views/searchView';
-import {elements, renderLoader, clearLoader} from './views/base';
+import * as recipeView from './views/recipeView';
 
-/** Global state of the herokuapp
+import {elements, renderLoader, clearLoader} from './views/base';
+import Recipe from './models/Recipe';
+
+
+/** Global state of the app
 * - Search object
 * - Current recipe object
-* - Sopping list object
+* - Shopping list object
 * - Linked recipes
 */
 
@@ -24,14 +28,17 @@ const controlSearch = async () => {
     searchView.clearInput();
     searchView.clearResults();
     renderLoader(elements.searchResult);
-    // 4) search for Recipes
-    await state.search.getResults();
+    try{
+      // 4) search for Recipes
+      await state.search.getResults();
 
-
-    // 5) render results on UI
-    clearLoader();
-    searchView.renderResults(state.search.result);
-
+      // 5) render results on UI
+      clearLoader();
+      searchView.renderResults(state.search.result);
+    } catch(error){
+      alert("Something went wrong when rendering results!");
+      clearLoader();
+    }
   }
 }
 
@@ -40,10 +47,74 @@ document.querySelector('.search').addEventListener('submit', e => {
   controlSearch();
 });
 
-const search = new Search('pizza');
-//console.log(search);
-search.getResults();
+elements.searchResultPages.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-inline');
+  if (btn){
+    const goToPage = parseInt(btn.dataset.goto, 10);
+    console.log(goToPage);
+    searchView.clearResults();
+    searchView.renderResults(state.search.result, goToPage);
+  };
+
+})
+
+/**
+* recipe controller
+*
+*/
+const controlRecipe = async () => {
+  // ged the id from the url
+  const id = window.location.hash.replace('#','');
+  console.log(id);
+  if(id){
+    // prepare UI for changes
+    recipeView.clearRecipe();
+    renderLoader(elements.recipe);
+
+    // highlightSelector search item
+    if (state.search) searchView.highlightSelector(id);
+
+    //create new recipe object
+    state.recipe = new Recipe(id);
+
+    try {
+
+      //get recipe data and parse ingredients
+      await state.recipe.getRecipe();
+  //    console.log(state.recipe.ingredients);
+      state.recipe.parseIngredients();
+      console.log(state.recipe.ingredients);
+      //calc servings and time
+
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+  //    console.log(state.recipe);
+      //render recipe
+      clearLoader();
+      recipeView.renderRecipe(state.recipe);
+    } catch(error) {
+      alert("Error processing recipe!");
+    }
+  }
+}
+//window.addEventListener('hashchange', controlRecipe);
+//window.addEventListener('load', controlRecipe);
+
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
 
-//http://food2fork.com/api/search
-//1cc169cd69294c6a33d5b0c2c270c49f
+// handling recipe button clicks
+elements.recipe.addEventListener('click',  e => {
+  if(e.target.matches('.btn-decrease, .btn-decrease *')) {
+    // decrease btn is clicked
+    if(state.recipe.servings > 1)
+      state.recipe.updateServings('dec');
+      recipeView.updataServiceIngredient(state.recipe);
+  } else  if (e.target.matches('.btn-increase, .btn-increase *')) {
+    // increase btn is clicked
+    state.recipe.updateServings('inc');
+    recipeView.updataServiceIngredient(state.recipe);
+
+  }
+  console.log(state.recipe);
+})
