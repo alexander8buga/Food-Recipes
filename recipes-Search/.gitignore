@@ -5,6 +5,7 @@
 /integration/bazel/bazel-*
 e2e_test.*
 /node_modules
+node_modules
 tools/gulp-tasks/cldr/cldr-data/
 
 # Include when developing application packages.
